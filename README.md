@@ -158,3 +158,11 @@ nat6 del <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [W
 nat6 del <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]
 
 ```
+
+
+
+# 关于
+admin@ghzgqx.com 
+2019.1
+
+版权没有 盗版不究 随便用随便改 如果有BUG别找我反馈自己修 需要加啥功能也别找我 自己改
