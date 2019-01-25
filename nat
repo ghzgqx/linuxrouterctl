@@ -1,0 +1,85 @@
+#!/bin/bash
+case "$1" in
+    add)
+    case "$2" in 
+	pf|port|portforward)
+	if [ "$7" = "" ]
+		then
+				echo "nat add <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+		else
+			p=$3
+			lanip=$4
+			lanport=$5
+			wanif=$6
+			wanport=$7
+			dest=`echo ${lanport}|sed "s/:/-/g"`
+			echo "Execute: iptables -t nat -A PREROUTING -d 0.0.0.0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination ${lanip}:${dest}"
+			iptables -t nat -A PREROUTING -d 0.0.0.0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination ${lanip}:${dest}
+			echo "Execute: iptables -t nat -o ${wanif} -A POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE"
+			iptables -t nat -o ${wanif} -A POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE
+		fi
+	;;	
+	masq|masquerade)
+	if [ "$4" = "" ]
+			then
+				echo "nat add <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+			else
+			echo "Execute: iptables -t nat -A POSTROUTING -s $3 -o $4 -j MASQUERADE"
+			iptables -t nat -A POSTROUTING -s $3 -o $4 -j MASQUERADE
+			fi
+	;;
+	*)
+	echo "help"
+	echo ""
+	echo "nat add <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+	echo "nat add <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+	;;
+	esac
+	
+	;;
+	del)
+    case "$2" in 
+	pf|port|portforward)
+	if [ "$7" = "" ]
+		then
+				echo "nat add <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+		else
+			p=$3
+			lanip=$4
+			lanport=$5
+			wanif=$6
+			wanport=$7
+			dest=`echo ${lanport}|sed "s/:/-/g"`
+			echo "Execute: iptables -t nat -D PREROUTING -d 0.0.0.0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination ${lanip}:${dest}"
+			iptables -t nat -D PREROUTING -d 0.0.0.0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination ${lanip}:${dest}
+			echo "Execute: iptables -t nat -o ${wanif} -D POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE"
+			iptables -t nat -o ${wanif} -D POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE
+		fi
+	;;	
+	masq|masquerade)
+	if [ "$4" = "" ]
+			then
+				echo "nat add <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+			else
+			echo "Execute: iptables -t nat -D POSTROUTING -s $3 -o $4 -j MASQUERADE"
+			iptables -t nat -D POSTROUTING -s $3 -o $4 -j MASQUERADE
+			fi
+	;;
+	*)
+	echo "help"
+	echo ""
+	echo "nat del <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+	echo "nat del <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+	;;
+	esac
+	;;
+    *)
+	echo "help"
+	echo ""
+	echo "nat add <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+	echo "nat add <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+	echo "nat del <pf|port|portforward> [PROTOCOL] [LAN IP] [LAN PORT] [WAN INTERFACE] [WAN PORT]"
+	echo "nat del <masq|masquerade> [LAN IP]/[CIDR MASK] [WAN INTERFACE]"
+	;;
+esac
+
