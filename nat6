@@ -13,8 +13,8 @@ case "$1" in
 			wanif=$6
 			wanport=$7
 			dest=`echo ${lanport}|sed "s/:/-/g"`
-			echo "Execute: ip6tables -t nat -A PREROUTING -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}"
-			ip6tables -t nat -A PREROUTING -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}
+			echo "Execute: ip6tables -t nat -A PREROUTING -i ${wanif} -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}"
+			ip6tables -t nat -A PREROUTING -i ${wanif} -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}
 			echo "Execute: ip6tables -t nat -o ${wanif} -A POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE"
 			ip6tables -t nat -o ${wanif} -A POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE
 		fi
@@ -50,8 +50,8 @@ case "$1" in
 			wanif=$6
 			wanport=$7
 			dest=`echo ${lanport}|sed "s/:/-/g"`
-			echo "Execute: ip6tables -t nat -D PREROUTING -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}"
-			ip6tables -t nat -D PREROUTING -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}
+			echo "Execute: ip6tables -t nat -D PREROUTING -i ${wanif} -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}"
+			ip6tables -t nat -D PREROUTING -i ${wanif} -d ::0/0 -p ${p} --dport ${wanport} -j DNAT --to-destination [${lanip}]:${dest}
 			echo "Execute: ip6tables -t nat -o ${wanif} -D POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE"
 			ip6tables -t nat -o ${wanif} -D POSTROUTING -d ${lanip} -p ${p} --dport ${lanport} -j MASQUERADE
 		fi
